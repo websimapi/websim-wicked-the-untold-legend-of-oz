@@ -1,0 +1,158 @@
+:root {
+  --emerald-green: #50C878;
+  --wicked-green: #2d572c;
+  --glinda-gold: #ffd700;
+  --oz-purple: #800080;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, var(--emerald-green), var(--oz-purple));
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+#title-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 2em;
+  text-shadow: 0 0 10px var(--emerald-green);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.character-select {
+  display: flex;
+  gap: 2em;
+  margin-bottom: 2em;
+}
+
+.character {
+  cursor: pointer;
+  padding: 1em;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.character:hover {
+  transform: scale(1.1);
+}
+
+.character-portrait {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 1em;
+}
+
+.elphaba .character-portrait {
+  filter: drop-shadow(0 0 5px var(--wicked-green));
+}
+
+.glinda .character-portrait {
+  filter: drop-shadow(0 0 5px var(--glinda-gold));
+}
+
+#start-game {
+  padding: 1em 2em;
+  font-size: 1.2em;
+  background: var(--emerald-green);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#start-game:hover {
+  background: var(--oz-purple);
+  transform: scale(1.1);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Game World Styles */
+#game-world {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#world-map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#ui-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#stats {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.magic-meter, .health-meter {
+  width: 200px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+  border: 2px solid white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#dialog-box {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px var(--emerald-green);
+  }
+  to {
+    text-shadow: 0 0 20px var(--emerald-green), 0 0 30px var(--emerald-green);
+  }
+}
