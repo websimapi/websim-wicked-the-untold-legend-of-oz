@@ -156,3 +156,87 @@ h1 {
     text-shadow: 0 0 20px var(--emerald-green), 0 0 30px var(--emerald-green);
   }
 }
+
+.stats-preview {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 1em;
+  border-radius: 5px;
+  margin-top: 1em;
+  color: white;
+}
+
+.stats-preview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.stats-preview li {
+  margin: 0.5em 0;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(to right, 
+    var(--emerald-green), 
+    var(--glinda-gold)
+  );
+  transition: width 0.3s ease;
+}
+
+.meter-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 2px black;
+  pointer-events: none;
+  line-height: 20px;
+}
+
+.game-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1em 2em;
+  border-radius: 5px;
+  animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.player-character {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+.player-character.elphaba {
+  background: var(--wicked-green);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.player-character.glinda {
+  background: var(--glinda-gold);
+  border-radius: 50%;
+}
+
+/* Additional responsive styles */
+@media (max-width: 768px) {
+  .character-select {
+    flex-direction: column;
+  }
+  
+  #game-container {
+    height: 100vh;
+    max-width: 100%;
+  }
+}
