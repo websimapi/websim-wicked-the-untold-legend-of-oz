@@ -1,5 +1,8 @@
 export class EnvironmentSystem {
   constructor(world) {
+    if (!world) {
+      throw new Error('EnvironmentSystem requires a world instance');
+    }
     this.world = world;
     this.objects = new Map();
     this.interactables = new Map();

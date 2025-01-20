@@ -7,11 +7,9 @@ export class World {
   constructor() {
     this.regions = new Map();
     this.currentRegion = null;
-    this.weatherSystem = null;
-    this.timeSystem = null;
-    this.events = new Map(); // Add event system
+    this.events = new Map(); // Event system must be initialized first
     
-    // Initialize systems after imports
+    // Initialize core systems with this reference
     this.npcSystem = new NPCSystem(this);
     this.environmentSystem = new EnvironmentSystem(this);
     this.timeSystem = new TimeSystem(this);
@@ -31,7 +29,7 @@ export class World {
   // Add event system methods
   setupEventHandlers() {
     // Set up default event handlers
-    this.events.set('gameStart', () => {
+    this.events.set('gameStart', (data) => {
       console.log('Game started - world events initialized');
       // Trigger initial world state changes
       this.changeRegion('Emerald City');
@@ -39,26 +37,31 @@ export class World {
       this.updateTime();
     });
 
-    this.events.set('regionChange', (newRegion) => {
-      console.log(`Changing to region: ${newRegion}`);
-      this.changeRegion(newRegion);
+    this.events.set('regionChange', (data) => {
+      console.log(`Changing to region: ${data.newRegion}`);
+      this.changeRegion(data.newRegion);
     });
 
-    this.events.set('weatherChange', (weatherType) => {
-      console.log(`Weather changing to: ${weatherType}`);
+    this.events.set('weatherChange', (data) => {
+      console.log(`Weather changing to: ${data.weatherType}`);
       // Implement weather change logic
     });
   }
 
-  // Add event trigger method
-  triggerEvent(eventName, ...args) {
-    if (this.events.has(eventName)) {
-      const handler = this.events.get(eventName);
-      handler(...args);
-      return true;
+  // Update event trigger method to be more robust
+  triggerEvent(eventName, data) {
+    if (!this.events.has(eventName)) {
+      console.warn(`No handler found for event: ${eventName}`);
+      return false;
     }
-    console.warn(`No handler found for event: ${eventName}`);
-    return false;
+    try {
+      const handler = this.events.get(eventName);
+      handler(data);
+      return true;
+    } catch (error) {
+      console.error(`Error triggering event ${eventName}:`, error);
+      return false;
+    }
   }
 
   // Add event registration method

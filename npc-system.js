@@ -1,5 +1,8 @@
 export class NPCSystem {
   constructor(world) {
+    if (!world) {
+      throw new Error('NPCSystem requires a world instance');
+    }
     this.world = world;
     this.npcs = new Map();
     this.initializeNPCs();

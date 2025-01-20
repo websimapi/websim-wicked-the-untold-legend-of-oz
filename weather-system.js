@@ -1,6 +1,9 @@
 export class WeatherSystem {
   constructor(world) {
-    this.world = world;
+    if (!world) {
+      throw new Error('WeatherSystem requires a world instance');
+    }
+    this.world = world; // Store world reference
     this.currentWeather = 'clear';
     this.weatherIntensity = 0;
     this.transitionTime = 0;
@@ -32,19 +35,29 @@ export class WeatherSystem {
       }
     };
 
+    // Ensure container exists before initializing
+    this.ensureContainer();
     this.initializeWeather();
   }
 
-  initializeWeather() {
-    this.setupWeatherContainer();
-    this.scheduleNextWeatherChange();
+  ensureContainer() {
+    const gameWorld = document.getElementById('game-world');
+    if (!gameWorld) {
+      console.warn('Game world container not found');
+      return;
+    }
+    
+    let container = document.getElementById('weather-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'weather-container';
+      container.className = 'weather-container';
+      gameWorld.appendChild(container);
+    }
   }
 
-  setupWeatherContainer() {
-    const container = document.createElement('div');
-    container.id = 'weather-container';
-    container.className = 'weather-container';
-    document.getElementById('game-world').appendChild(container);
+  initializeWeather() {
+    this.scheduleNextWeatherChange();
   }
 
   update(deltaTime) {
@@ -131,18 +144,28 @@ export class WeatherSystem {
   }
 
   changeWeather(newWeather) {
+    if (!this.weatherTypes[newWeather]) {
+      console.warn(`Invalid weather type: ${newWeather}`);
+      return;
+    }
+
     const weatherData = this.weatherTypes[newWeather];
     this.currentWeather = newWeather;
     this.transitionTime = 2; // 2 seconds transition
     this.weatherDuration = Math.random() * 
       (weatherData.duration.max - weatherData.duration.min) + 
       weatherData.duration.min;
-    
-    this.world.triggerEvent('weatherChange', {
-      type: newWeather,
-      intensity: this.weatherIntensity,
-      effects: weatherData.effects
-    });
+
+    // Safely trigger weather change event
+    if (this.world && typeof this.world.triggerEvent === 'function') {
+      this.world.triggerEvent('weatherChange', {
+        type: newWeather,
+        intensity: this.weatherIntensity,
+        effects: weatherData.effects
+      });
+    } else {
+      console.warn('Weather change event could not be triggered');
+    }
   }
 
   updateWeatherEffects() {

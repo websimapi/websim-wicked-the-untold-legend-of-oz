@@ -158,17 +158,22 @@ class Game {
   }
 
   initializeGameSystems() {
+    // Create world first since other systems depend on it
     this.world = new World();
+    
+    // Now create all other systems, passing world reference
     this.questSystem = new QuestSystem();
     this.dialogSystem = new DialogSystem();
     this.combatSystem = new CombatSystem();
-    this.npcSystem = new NPCSystem();
-    this.environmentSystem = new EnvironmentSystem();
-    this.timeSystem = new TimeSystem();
-    this.weatherSystem = new WeatherSystem();
+
+    // These systems are created by World, so we don't create them here
+    this.npcSystem = this.world.npcSystem;
+    this.environmentSystem = this.world.environmentSystem;
+    this.timeSystem = this.world.timeSystem;
+    this.weatherSystem = this.world.weatherSystem;
     
-    // Set initial world region
-    this.world.changeRegion('Emerald City');
+    // Trigger world initialization after all systems are ready
+    this.world.triggerEvent('gameStart');
   }
 
   createPlayer() {
