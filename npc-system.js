@@ -139,6 +139,15 @@ export class NPCSystem {
     npcElement.onclick = () => this.interactWithNPC(npcId);
   }
 
+  update() {
+    // Update all NPCs in current region
+    if (this.world.currentRegion) {
+      this.getNPCsInRegion(this.world.currentRegion.name).forEach(npc => {
+        this.updateNPC(npc.id);
+      });
+    }
+  }
+
   updateNPC(npcId) {
     const npc = this.npcs.get(npcId);
     if (!npc) return;
@@ -151,16 +160,107 @@ export class NPCSystem {
       case 'quest_giver':
         this.updateQuestGiver(npc);
         break;
-      // Add more NPC type updates as needed
+      case 'mentor':
+        this.updateMentor(npc);
+        break;
+    }
+
+    // Update NPC scheduling based on time
+    if (this.world.timeSystem) {
+      this.updateNPCSchedule(npc);
     }
   }
 
+  updateNPCSchedule(npc) {
+    const currentPeriod = this.world.timeSystem.getCurrentPeriod();
+    const schedule = this.getNPCSchedule(npc.type);
+    
+    if (schedule && schedule[currentPeriod]) {
+      const activity = schedule[currentPeriod];
+      // Update NPC position and behavior based on schedule
+      if (activity.position) {
+        npc.position = { ...activity.position };
+      }
+      if (activity.dialogue) {
+        npc.dialogue.default = activity.dialogue;
+      }
+    }
+  }
+
+  getNPCSchedule(npcType) {
+    const schedules = {
+      merchant: {
+        DAWN: { position: { x: 200, y: 200 }, activity: 'preparing_shop' },
+        MORNING: { position: { x: 300, y: 300 }, activity: 'selling' },
+        AFTERNOON: { position: { x: 300, y: 300 }, activity: 'selling' },
+        DUSK: { position: { x: 200, y: 200 }, activity: 'closing_shop' },
+        NIGHT: { position: { x: 100, y: 100 }, activity: 'sleeping' }
+      },
+      quest_giver: {
+        DAWN: { position: { x: 400, y: 200 }, activity: 'patrolling' },
+        MORNING: { position: { x: 500, y: 300 }, activity: 'giving_quests' },
+        AFTERNOON: { position: { x: 500, y: 300 }, activity: 'giving_quests' },
+        DUSK: { position: { x: 400, y: 200 }, activity: 'patrolling' },
+        NIGHT: { position: { x: 300, y: 100 }, activity: 'resting' }
+      }
+    };
+
+    return schedules[npcType];
+  }
+
   updateMerchant(npc) {
-    // Update merchant inventory, prices, etc.
+    // Update merchant inventory based on time of day
+    const currentHour = this.world.timeSystem ? this.world.timeSystem.time : 12;
+    
+    // Merchants restock during early morning
+    if (currentHour >= 5 && currentHour < 7) {
+      this.restockMerchant(npc);
+    }
   }
 
   updateQuestGiver(npc) {
-    // Update available quests, quest status, etc.
+    // Update available quests based on player progress
+    if (this.world.questSystem) {
+      const availableQuests = this.world.questSystem.getAvailableQuests();
+      npc.availableQuests = availableQuests.filter(quest => 
+        quest.questGiver === npc.id
+      );
+    }
+  }
+
+  updateMentor(npc) {
+    // Update mentor teaching availability and lessons
+    const currentHour = this.world.timeSystem ? this.world.timeSystem.time : 12;
+    npc.isTeaching = currentHour >= 9 && currentHour < 17; // Teaching hours
+  }
+
+  restockMerchant(npc) {
+    // Restock merchant inventory with new items
+    if (!npc.lastRestockTime || 
+        (this.world.timeSystem && 
+         this.world.timeSystem.daysPassed > npc.lastRestockTime)) {
+      npc.inventory = this.generateMerchantInventory(npc.type);
+      npc.lastRestockTime = this.world.timeSystem ? 
+        this.world.timeSystem.daysPassed : 0;
+    }
+  }
+
+  generateMerchantInventory(merchantType) {
+    // Generate appropriate inventory based on merchant type
+    const inventoryTemplates = {
+      general: [
+        { id: 'healing_potion', name: 'Healing Potion', price: 50 },
+        { id: 'magic_scroll', name: 'Magic Scroll', price: 100 },
+        { id: 'bread', name: 'Fresh Bread', price: 5 }
+      ],
+      magic: [
+        { id: 'mana_potion', name: 'Mana Potion', price: 75 },
+        { id: 'spell_book', name: 'Spell Book', price: 200 },
+        { id: 'magic_wand', name: 'Magic Wand', price: 150 }
+      ]
+    };
+
+    return [...inventoryTemplates[merchantType] || inventoryTemplates.general];
   }
 
   getNPCsInRegion(regionName) {

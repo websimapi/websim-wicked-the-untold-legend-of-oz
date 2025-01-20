@@ -247,27 +247,36 @@ class Game {
   }
 
   update() {
+    if (!this.isGameStarted || this.isPaused) return;
+
+    // Update all game systems in the correct order
+    if (this.timeSystem) {
+      this.timeSystem.update();
+    }
+
+    if (this.weatherSystem) {
+      this.weatherSystem.update(1/60); // Assuming 60fps, pass deltaTime
+    }
+
+    if (this.world) {
+      this.world.update();
+    }
+
+    if (this.npcSystem && typeof this.npcSystem.update === 'function') {
+      this.npcSystem.update();
+    }
+
     if (this.player) {
       this.player.update();
       this.updatePlayerUI();
     }
-    if (this.world) {
-      this.world.update();
-    }
+
     if (this.combatSystem) {
       this.combatSystem.update();
     }
-    if (this.npcSystem) {
-      this.npcSystem.update();
-    }
+
     if (this.environmentSystem) {
       this.environmentSystem.update();
-    }
-    if (this.timeSystem) {
-      this.timeSystem.update();
-    }
-    if (this.weatherSystem) {
-      this.weatherSystem.update();
     }
   }
 
