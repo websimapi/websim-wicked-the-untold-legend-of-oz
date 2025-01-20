@@ -11,6 +11,7 @@ class Game {
     this.questSystem = null;
     this.dialogSystem = null;
     this.combatSystem = null;
+    this.player = null;
     this.initialize();
   }
 
@@ -49,10 +50,10 @@ class Game {
     this.dialogSystem = new DialogSystem();
     this.combatSystem = new CombatSystem();
 
-    const characterClass = this.selectedCharacter === 'elphaba' ? 
-      Character.createElphaba() : Character.createGlinda();
-    
-    this.player = new characterClass(this.world);
+    // Create the player character directly using the factory methods
+    this.player = this.selectedCharacter === 'elphaba' ? 
+      Character.createElphaba(this.world) : 
+      Character.createGlinda(this.world);
     
     // Start the game loop
     this.gameLoop();
@@ -85,9 +86,6 @@ class Game {
     }
     if (this.player) {
       this.player.render();
-    }
-    if (this.dialogSystem) {
-      this.dialogSystem.render();
     }
   }
 }
