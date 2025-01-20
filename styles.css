@@ -3,6 +3,8 @@
   --wicked-green: #2d572c;
   --glinda-gold: #ffd700;
   --oz-purple: #800080;
+  --world-brightness: 1;
+  --world-tint: #ffffff;
 }
 
 * {
@@ -103,6 +105,7 @@ h1 {
   width: 100%;
   height: 100%;
   position: relative;
+  filter: brightness(var(--world-brightness)) saturate(calc(var(--world-brightness) * 0.8 + 0.2));
 }
 
 #world-map {
@@ -227,6 +230,261 @@ h1 {
 .player-character.glinda {
   background: var(--glinda-gold);
   border-radius: 50%;
+}
+
+.region {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  color: white;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.region.city {
+  background: linear-gradient(135deg, var(--emerald-green), #1a4a1a);
+}
+
+.region.rural {
+  background: linear-gradient(135deg, #8B4513, #654321);
+}
+
+.region.wilderness {
+  background: linear-gradient(135deg, #2F4F4F, #1a2a2a);
+}
+
+.region h2 {
+  font-size: 2em;
+  margin-bottom: 1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.region-climate, .region-status {
+  display: inline-block;
+  padding: 0.5em 1em;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  margin: 0.5em;
+}
+
+.weather-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.weather-effect.rain {
+  background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  animation: rain 1s linear infinite;
+}
+
+@keyframes rain {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 20px; }
+}
+
+.npc {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.npc-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--oz-purple);
+  border: 2px solid var(--glinda-gold);
+}
+
+.npc-quest_giver .npc-avatar {
+  background: var(--emerald-green);
+}
+
+.npc-merchant .npc-avatar {
+  background: var(--glinda-gold);
+}
+
+.npc-name {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.npc-interaction-hint {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.npc:hover .npc-interaction-hint {
+  opacity: 1;
+}
+
+.environment-object {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+
+.gate-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gate-door {
+  fill: var(--emerald-green);
+  transition: transform 0.3s ease;
+}
+
+.gate-door.closed {
+  transform-origin: 10% 50%;
+  transform: rotate(0deg);
+}
+
+.gate-door.open {
+  transform-origin: 10% 50%;
+  transform: rotate(-90deg);
+}
+
+.gate-handle {
+  fill: var(--glinda-gold);
+}
+
+.resource-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.resource-icon {
+  width: 100%;
+  height: 100%;
+  background: var(--wicked-green);
+  border-radius: 5px;
+}
+
+.particle-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+}
+
+.world-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--world-tint);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.weather-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.weather-particle {
+  position: absolute;
+  pointer-events: none;
+}
+
+.rain-drop {
+  width: 1px;
+  height: 20px;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
+  transform-origin: top;
+  transform: rotate(20deg);
+}
+
+.storm-drop {
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.9));
+  transform-origin: top;
+  transform: rotate(30deg);
+}
+
+.fog-particle {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+  border-radius: 50%;
+}
+
+.lightning-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  animation: flash 0.1s ease-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.weather-rain .ground-overlay {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.2));
+}
+
+.weather-storm .ground-overlay {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.4));
+}
+
+.weather-fog .ground-overlay {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.time-display {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+  font-family: 'Courier New', monospace;
 }
 
 /* Additional responsive styles */
