@@ -3,6 +3,10 @@ import { World } from './world.js';
 import { QuestSystem } from './quest-system.js';
 import { DialogSystem } from './dialog-system.js';
 import { CombatSystem } from './combat-system.js';
+import { NPCSystem } from './npc-system.js';
+import { EnvironmentSystem } from './environment-system.js';
+import { TimeSystem } from './time-system.js';
+import { WeatherSystem } from './weather-system.js';
 
 class Game {
   constructor() {
@@ -12,6 +16,10 @@ class Game {
     this.questSystem = null;
     this.dialogSystem = null;
     this.combatSystem = null;
+    this.npcSystem = null;
+    this.environmentSystem = null;
+    this.timeSystem = null;
+    this.weatherSystem = null;
     this.player = null;
     
     // Game state flags
@@ -154,6 +162,10 @@ class Game {
     this.questSystem = new QuestSystem();
     this.dialogSystem = new DialogSystem();
     this.combatSystem = new CombatSystem();
+    this.npcSystem = new NPCSystem();
+    this.environmentSystem = new EnvironmentSystem();
+    this.timeSystem = new TimeSystem();
+    this.weatherSystem = new WeatherSystem();
     
     // Set initial world region
     this.world.changeRegion('Emerald City');
@@ -240,6 +252,18 @@ class Game {
     if (this.combatSystem) {
       this.combatSystem.update();
     }
+    if (this.npcSystem) {
+      this.npcSystem.update();
+    }
+    if (this.environmentSystem) {
+      this.environmentSystem.update();
+    }
+    if (this.timeSystem) {
+      this.timeSystem.update();
+    }
+    if (this.weatherSystem) {
+      this.weatherSystem.update();
+    }
   }
 
   render() {
@@ -248,6 +272,12 @@ class Game {
     }
     if (this.player) {
       this.player.render();
+    }
+    if (this.npcSystem) {
+      this.npcSystem.render();
+    }
+    if (this.environmentSystem) {
+      this.environmentSystem.render();
     }
   }
 

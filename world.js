@@ -1,3 +1,8 @@
+import { NPCSystem } from './npc-system.js';
+import { EnvironmentSystem } from './environment-system.js';
+import { TimeSystem } from './time-system.js';
+import { WeatherSystem } from './weather-system.js';
+
 export class World {
   constructor() {
     this.regions = new Map();
@@ -5,10 +10,13 @@ export class World {
     this.weatherSystem = null;
     this.timeSystem = null;
     this.events = new Map(); // Add event system
+    
+    // Initialize systems after imports
     this.npcSystem = new NPCSystem(this);
     this.environmentSystem = new EnvironmentSystem(this);
     this.timeSystem = new TimeSystem(this);
     this.weatherSystem = new WeatherSystem(this);
+    
     this.gameContainer = document.getElementById('game-container') || document.createElement('div');
     this.initializeWorld();
   }
@@ -171,5 +179,3 @@ export class World {
     // Render time of day effects
   }
 }
-
-// Assuming NPCSystem, EnvironmentSystem, TimeSystem and WeatherSystem classes are defined elsewhere
